@@ -1,0 +1,21 @@
+<jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.1">
+
+    <constraint id="example:ConstructorOfBeanPropertyBindingResultMustNotBeUsed" severity="minor">
+        <description>Constructors of org.springframework.validation.BeanPropertyBindingResult must not be used. That kind of instances won't resolve error codes using i18n.</description>
+        <cypher><![CDATA[
+            match
+                (dateType:Type)-[:DECLARES]->(forbiddenMethod:Method),
+                (type:Type)-[:DECLARES]->(method:Method)-[:INVOKES]->(forbiddenMethod)
+            where
+                dateType.fqn = 'org.springframework.validation.BeanPropertyBindingResult'
+                and forbiddenMethod:Constructor
+            return
+                method as Method
+        ]]></cypher>
+    </constraint>
+
+    <group id="default">
+        <includeConstraint refId="example:ConstructorOfBeanPropertyBindingResultMustNotBeUsed"/>
+    </group>
+
+</jqa:jqassistant-rules>
